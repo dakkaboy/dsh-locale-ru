@@ -1,0 +1,5 @@
+# Русская локализация интерфейса DeepSeek Harness: один слой-патч, монтирующий
+# клиентский плагин dsh-locale-ru (язык «Русский» и словари всех разделов UI).
+- insert:
+    - id: locale-ru
+      name: dsh-locale-ru

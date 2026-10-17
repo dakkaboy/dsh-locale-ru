@@ -18,7 +18,25 @@
 
 ## Установка
 
-### Одной командой (Windows)
+Пакет объявляет `dsh.bundle`, поэтому его можно ставить двумя способами: **как bundle** (штатно,
+через менеджер плагинов или маркет) или **напрямую** скриптом/вручную. Смешивать режимы нельзя —
+иначе запись `locale-ru` смонтируется дважды.
+
+### Из индекса плагинного маркета (bundle)
+
+```text
+https://dakkaboy.github.io/dsh-locale-ru/index.json
+```
+
+Вкладка **Discover** в настройках плагинов → добавить этот URL индекса → установить «Русификатор
+интерфейса». Маркет поставляется в DSH как экспериментальный bundle
+`@deepseek-ai/dsh-experimental-plugin-market-bundle`; если вкладки нет, добавьте его в
+`dsh.profile.bundles` своего профиля.
+
+Установка из индекса ставит пакет по закреплённому коммиту репозитория и добавляет
+`dsh-locale-ru` в `dsh.profile.bundles` — дальше профиль собирает слой-патч сам.
+
+### Одной командой (Windows, напрямую)
 
 ```powershell
 irm https://github.com/dakkaboy/dsh-locale-ru/releases/latest/download/install.ps1 | iex
@@ -31,7 +49,7 @@ irm https://github.com/dakkaboy/dsh-locale-ru/releases/latest/download/install.p
 
 ```powershell
 irm https://github.com/dakkaboy/dsh-locale-ru/releases/latest/download/install.ps1 -OutFile install.ps1
-.\install.ps1 -Profile web -DshHome "D:\dsh-data" -Version v1.0.0
+.\install.ps1 -Profile web -DshHome "D:\dsh-data" -Version v1.1.0
 ```
 
 Удаление одной командой:
@@ -40,17 +58,17 @@ irm https://github.com/dakkaboy/dsh-locale-ru/releases/latest/download/install.p
 irm https://github.com/dakkaboy/dsh-locale-ru/releases/latest/download/uninstall.ps1 | iex
 ```
 
-### Через pnpm (любая ОС)
+### Через pnpm как bundle
 
 ```powershell
 cd "$env:USERPROFILE\.dsh\profiles\desktop"
 pnpm add https://github.com/dakkaboy/dsh-locale-ru/releases/latest/download/dsh-locale-ru.tgz
 ```
 
-Останется только добавить запись в `cordis.patch.yml` профиля (см. шаг 3 ниже) — сам пакет
-конфигурацию не правит.
+Затем добавить `"dsh-locale-ru"` в `dsh.profile.bundles` профиля (`package.json`).
+Запись в `cordis.patch.yml` в этом режиме не нужна: её вставляет сам bundle.
 
-### Вручную
+### Вручную (напрямую)
 
 Плагин ставится в профиль DSH (`$DSH_HOME/profiles/<profile>`, по умолчанию `desktop`) тремя шагами:
 
@@ -86,7 +104,7 @@ pnpm add file:./plugins/dsh-locale-ru
 Переключить вручную: **Настройки → Общие → Язык → «Русский»**. Выбор сохраняется на хосте
 (`$DSH_HOME/cordis.patch.yml`, настройка `locale.preference`) и действует во всех вкладках.
 
-### Удаление
+### Удаление (напрямую)
 
 ```powershell
 $profile = "$env:USERPROFILE\.dsh\profiles\desktop"
@@ -95,6 +113,9 @@ Remove-Item "$profile\plugins\dsh-locale-ru" -Recurse -Force
 ```
 
 И убрать блок `- insert:` с `id: locale-ru` из `$profile\cordis.patch.yml`.
+
+В bundle-режиме удаление — это снять `dsh-locale-ru` из `dsh.profile.bundles` профиля
+и удалить пакет; `uninstall.ps1` делает и то, и другое автоматически.
 
 ## Как это работает
 
@@ -111,13 +132,14 @@ export function apply(ctx) {
 }
 ```
 
-Пакет состоит из двух половин:
+Пакет состоит из двух половин плюс слой-патч:
 
 | Файл | Роль |
 |---|---|
 | `lib/index.js` | хостовая половина: пустая, плагину не нужен код на стороне хоста |
 | `lib/client.js` | браузерный бандл: регистрирует язык `ru` и 64 словаря |
-| `package.json` | манифест плагина, объявление `dsh.client` (`platform: web`) |
+| `cordis.patch.yml` | слой-патч bundle: вставляет запись `locale-ru` в дерево профиля |
+| `package.json` | манифест: `dsh.client` (`platform: web`) и `dsh.bundle.patch` |
 
 Ключи и пространства имён взяты из самих клиентских пакетов DSH, поэтому перевод попадает ровно
 в те места интерфейса, где программа вызывает `t('ключ')`. Поиск идёт по цепочке `ru → en`,

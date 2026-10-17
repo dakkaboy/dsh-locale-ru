@@ -109,6 +109,22 @@ function Remove-Link($link) {
   }
 }
 
+function Get-BundleNames($path) {
+  if (-not (Test-Path $path)) { return @() }
+  $pkg = Get-Content $path -Raw | ConvertFrom-Json
+  if ($null -eq $pkg.dsh -or $null -eq $pkg.dsh.profile -or $null -eq $pkg.dsh.profile.bundles) { return @() }
+  return @($pkg.dsh.profile.bundles)
+}
+
+function Remove-BundleEntry($path) {
+  $bundles = Get-BundleNames $path
+  if (-not ($bundles -contains $PluginName)) { return }
+  $pkg = Get-Content $path -Raw | ConvertFrom-Json
+  $pkg.dsh.profile.bundles = @($bundles | Where-Object { $_ -ne $PluginName })
+  ($pkg | ConvertTo-Json -Depth 20) + "`n" | Set-Content -Path $path -NoNewline -Encoding utf8
+  Write-Step "удалён из dsh.profile.bundles"
+}
+
 $dshHome = Resolve-DshHome
 $profileDir = Join-Path (Join-Path $dshHome 'profiles') $Profile
 $patchPath = Join-Path $profileDir 'cordis.patch.yml'
@@ -120,10 +136,19 @@ if (-not (Test-Path $profileDir)) {
   Fail "профиль DSH не найден: $profileDir`nЗапустите DeepSeek Harness хотя бы раз или укажите -Profile/-DshHome."
 }
 
+if (-not $Uninstall -and ((Get-BundleNames $manifestPath) -contains $PluginName)) {
+  Write-Host "Русификатор уже установлен как bundle '$PluginName' в профиле '$Profile'." -ForegroundColor Yellow
+  Write-Host 'Обновите окно DSH (F5). Удалить: uninstall.ps1'
+  exit 0
+}
+
 if ($Uninstall) {
   Write-Host "Удаление $PluginName из профиля '$Profile' ($profileDir)"
   Remove-PatchEntry $patchPath
-  if (Test-Path $manifestPath) { Update-Manifest $manifestPath $false }
+  if (Test-Path $manifestPath) {
+    Remove-BundleEntry $manifestPath
+    Update-Manifest $manifestPath $false
+  }
   Remove-Link $linkPath
   if (Test-Path $pluginDir) { Remove-Item $pluginDir -Recurse -Force }
   Write-Step "готово. Перезагрузите окно DSH (F5)."

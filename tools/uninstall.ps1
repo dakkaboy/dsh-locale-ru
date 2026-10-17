@@ -75,12 +75,24 @@ function Remove-Link($link) {
   }
 }
 
+function Remove-BundleEntry($path) {
+  if (-not (Test-Path $path)) { return }
+  $pkg = Get-Content $path -Raw | ConvertFrom-Json
+  if ($null -eq $pkg.dsh -or $null -eq $pkg.dsh.profile -or $null -eq $pkg.dsh.profile.bundles) { return }
+  $bundles = @($pkg.dsh.profile.bundles)
+  if (-not ($bundles -contains $PluginName)) { return }
+  $pkg.dsh.profile.bundles = @($bundles | Where-Object { $_ -ne $PluginName })
+  ($pkg | ConvertTo-Json -Depth 20) + "`n" | Set-Content -Path $path -NoNewline -Encoding utf8
+  Write-Step 'удалён из dsh.profile.bundles'
+}
+
 $dshHome = Resolve-DshHome
 $profileDir = Join-Path (Join-Path $dshHome 'profiles') $Profile
 if (-not (Test-Path $profileDir)) { Fail "профиль DSH не найден: $profileDir" }
 
 Write-Host "Удаление $PluginName из профиля '$Profile'"
 Remove-PatchEntry (Join-Path $profileDir 'cordis.patch.yml')
+Remove-BundleEntry (Join-Path $profileDir 'package.json')
 Remove-ManifestEntry (Join-Path $profileDir 'package.json')
 Remove-Link (Join-Path (Join-Path $profileDir 'node_modules') $PluginName)
 $pluginDir = Join-Path (Join-Path $profileDir 'plugins') $PluginName

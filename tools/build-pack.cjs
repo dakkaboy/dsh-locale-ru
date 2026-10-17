@@ -91,7 +91,7 @@ for (const ns of namespaces) {
 
 const pkg = {
   name: 'dsh-locale-ru',
-  version: '1.0.0',
+  version: process.argv[5] || '1.0.0',
   description: 'Русская локализация веб-интерфейса DeepSeek Harness: 2737 строк в 64 разделах',
   keywords: ['deepseek', 'dsh', 'localization', 'i18n', 'russian', 'locale', 'plugin'],
   license: 'MIT',
@@ -103,17 +103,28 @@ const pkg = {
   exports: {
     '.': './lib/index.js',
     './client': './lib/client.js',
+    './cordis.patch.yml': './cordis.patch.yml',
     './package.json': './package.json',
   },
   dsh: {
+    bundle: {
+      patch: './cordis.patch.yml',
+    },
     client: {
       platform: 'web',
       immediately: true,
       inject: ['@deepseek-ai/dsh-client-locale'],
     },
   },
-  files: ['lib/index.js', 'lib/client.js', 'README.md', 'LICENSE'],
+  files: ['lib/index.js', 'lib/client.js', 'cordis.patch.yml', 'README.md', 'LICENSE'],
 };
+
+const bundlePatch = `# Русская локализация интерфейса DeepSeek Harness: один слой-патч, монтирующий
+# клиентский плагин dsh-locale-ru (язык «Русский» и словари всех разделов UI).
+- insert:
+    - id: locale-ru
+      name: dsh-locale-ru
+`;
 
 const indexJs = `/** Node half of the Russian locale pack: it contributes no host service of its own. */
 export const inject = []
@@ -148,6 +159,7 @@ fs.mkdirSync(path.join(OUT, 'lib'), { recursive: true });
 fs.writeFileSync(path.join(OUT, 'package.json'), JSON.stringify(pkg, null, 2) + '\n');
 fs.writeFileSync(path.join(OUT, 'lib', 'index.js'), indexJs);
 fs.writeFileSync(path.join(OUT, 'lib', 'client.js'), clientJs);
+fs.writeFileSync(path.join(OUT, 'cordis.patch.yml'), bundlePatch);
 
 console.log(`packages: ${namespaces.length}  translated: ${translated}  fallback-to-en: ${untranslated}`);
 if (gaps.length) console.log('first gaps: ' + gaps.slice(0, 20).join(', ') + (gaps.length > 20 ? ' …' : ''));
