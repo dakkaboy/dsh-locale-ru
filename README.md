@@ -18,6 +18,40 @@
 
 ## Установка
 
+### Одной командой (Windows)
+
+```powershell
+irm https://github.com/dakkaboy/dsh-locale-ru/releases/latest/download/install.ps1 | iex
+```
+
+Скрипт скачивает пакет из последнего релиза, кладёт его в профиль, связывает с `node_modules`
+и включает в `cordis.patch.yml`. Ничего не патчит в самой программе.
+
+Параметры (если нужен другой профиль или каталог DSH):
+
+```powershell
+irm https://github.com/dakkaboy/dsh-locale-ru/releases/latest/download/install.ps1 -OutFile install.ps1
+.\install.ps1 -Profile web -DshHome "D:\dsh-data" -Version v1.0.0
+```
+
+Удаление одной командой:
+
+```powershell
+irm https://github.com/dakkaboy/dsh-locale-ru/releases/latest/download/uninstall.ps1 | iex
+```
+
+### Через pnpm (любая ОС)
+
+```powershell
+cd "$env:USERPROFILE\.dsh\profiles\desktop"
+pnpm add https://github.com/dakkaboy/dsh-locale-ru/releases/latest/download/dsh-locale-ru.tgz
+```
+
+Останется только добавить запись в `cordis.patch.yml` профиля (см. шаг 3 ниже) — сам пакет
+конфигурацию не правит.
+
+### Вручную
+
 Плагин ставится в профиль DSH (`$DSH_HOME/profiles/<profile>`, по умолчанию `desktop`) тремя шагами:
 
 ```powershell
