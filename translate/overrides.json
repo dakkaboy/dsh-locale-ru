@@ -1,0 +1,22 @@
+{
+  "settings.account": {
+    "onboardingPurposePrefix": "С чем вам",
+    "onboardingPurposeSuffix": "поможет?",
+    "contactUs": "Обратная связь"
+  },
+  "common": {
+    "markdown.truncatedCharacters": "… обрезано до {total} символов"
+  },
+  "chat": {
+    "number.groupSeparator": "\u00a0",
+    "message.stepProcess.sharedPrefix": "",
+    "clock.md": "{d}.{m}",
+    "clock.ymd": "{d}.{m}.{y}"
+  },
+  "workspace": {
+    "date.ymd": "{d}.{m}.{y}"
+  },
+  "pluginManager": {
+    "sentenceSeparator": " "
+  }
+}

@@ -1,0 +1,187 @@
+[
+  {
+    "id": "G01",
+    "file": "translate/batch-G01.json",
+    "output": "translate/ru-G01.json",
+    "count": 99,
+    "namespaces": [
+      "common",
+      "settings.locale",
+      "shortcuts",
+      "shortcuts.layout"
+    ]
+  },
+  {
+    "id": "G02",
+    "file": "translate/batch-G02.json",
+    "output": "translate/ru-G02.json",
+    "count": 160,
+    "namespaces": [
+      "settings",
+      "settings.account",
+      "settings.theme"
+    ]
+  },
+  {
+    "id": "G03",
+    "file": "translate/batch-G03.json",
+    "output": "translate/ru-G03.json",
+    "count": 208,
+    "namespaces": [
+      "settings.models",
+      "settings.webSearch",
+      "settings.agentLoop",
+      "settings.subagent"
+    ]
+  },
+  {
+    "id": "G04",
+    "file": "translate/batch-G04.json",
+    "output": "translate/ru-G04.json",
+    "count": 178,
+    "namespaces": [
+      "pluginMarket",
+      "settings.plugins",
+      "settings.pluginInventory",
+      "settings.shell",
+      "settings.sessionLog",
+      "settings.agentPreset",
+      "settings.permission"
+    ]
+  },
+  {
+    "id": "G05",
+    "file": "translate/batch-G05.json",
+    "output": "translate/ru-G05.json",
+    "count": 221,
+    "namespaces": [
+      "pluginManager"
+    ]
+  },
+  {
+    "id": "G06",
+    "file": "translate/batch-G06.json",
+    "output": "translate/ru-G06.json",
+    "count": 186,
+    "namespaces": [
+      "conversation"
+    ]
+  },
+  {
+    "id": "G07",
+    "file": "translate/batch-G07.json",
+    "output": "translate/ru-G07.json",
+    "count": 187,
+    "namespaces": [
+      "conversation"
+    ]
+  },
+  {
+    "id": "G08",
+    "file": "translate/batch-G08.json",
+    "output": "translate/ru-G08.json",
+    "count": 191,
+    "namespaces": [
+      "chat"
+    ]
+  },
+  {
+    "id": "G09",
+    "file": "translate/batch-G09.json",
+    "output": "translate/ru-G09.json",
+    "count": 192,
+    "namespaces": [
+      "trajectory"
+    ]
+  },
+  {
+    "id": "G10",
+    "file": "translate/batch-G10.json",
+    "output": "translate/ru-G10.json",
+    "count": 167,
+    "namespaces": [
+      "workspace",
+      "sidebar",
+      "sidebarFiles",
+      "sidebarBrowser"
+    ]
+  },
+  {
+    "id": "G11",
+    "file": "translate/batch-G11.json",
+    "output": "translate/ru-G11.json",
+    "count": 152,
+    "namespaces": [
+      "sidebarRight",
+      "sidebarTerminal",
+      "sidebarDocumentPreview",
+      "documentMarkdown",
+      "documentHtml",
+      "sidebarCodePreview",
+      "sidebarOffice",
+      "sidebarExcel",
+      "sidebarImage",
+      "sidebarPdf",
+      "directory-browser"
+    ]
+  },
+  {
+    "id": "G12",
+    "file": "translate/batch-G12.json",
+    "output": "translate/ru-G12.json",
+    "count": 190,
+    "namespaces": [
+      "schedule.manager",
+      "schedule.catalog",
+      "job"
+    ]
+  },
+  {
+    "id": "G13",
+    "file": "translate/batch-G13.json",
+    "output": "translate/ru-G13.json",
+    "count": 166,
+    "namespaces": [
+      "voice-input",
+      "cotTranslation",
+      "agent-team"
+    ]
+  },
+  {
+    "id": "G14",
+    "file": "translate/batch-G14.json",
+    "output": "translate/ru-G14.json",
+    "count": 226,
+    "namespaces": [
+      "deliverables",
+      "plan",
+      "reference",
+      "skill",
+      "subagent",
+      "workflowRun",
+      "inspectorPanel",
+      "session-inspector",
+      "session-log-download"
+    ]
+  },
+  {
+    "id": "G15",
+    "file": "translate/batch-G15.json",
+    "output": "translate/ru-G15.json",
+    "count": 214,
+    "namespaces": [
+      "cordis",
+      "command",
+      "slash.menu",
+      "question",
+      "feedback",
+      "permission.access",
+      "open-in-app",
+      "secretMask",
+      "deepseek-model-label-1017",
+      "approval",
+      "goal",
+      "model"
+    ]
+  }
+]

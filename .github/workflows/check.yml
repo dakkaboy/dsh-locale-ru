@@ -1,0 +1,20 @@
+name: check
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  translations:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Validate batches, placeholders and coverage
+        run: node tools/check-all.cjs
+      - name: Build the plugin bundle
+        run: node tools/build-pack.cjs translate inspect/corpus.json /tmp/pack
+      - name: Execute the bundle and verify registrations
+        run: node tools/verify-pack.cjs /tmp/pack inspect/corpus.json --strict
