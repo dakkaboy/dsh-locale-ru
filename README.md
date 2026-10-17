@@ -158,8 +158,22 @@ lib/           собранный бандл плагина (то, что исп
 
 ```bash
 node tools/check-all.cjs                                   # ключи, плейсхолдеры, полное покрытие
-node tools/build-pack.cjs translate inspect/corpus.json .  # собрать package.json и lib/
+node tools/build-pack.cjs translate inspect/corpus.json .  # собрать package.json, cordis.patch.yml и lib/
 node tools/verify-pack.cjs . inspect/corpus.json --strict  # исполнить бандл и проверить регистрацию
+```
+
+Служебные:
+
+```bash
+node tools/asar-list.cjs <app.asar> list "<regex>"            # что лежит в app.asar
+node tools/asar-extract-tree.cjs <app.asar> <prefix> <dir>    # выгрузить дерево пакета целиком
+node tools/check-partial.cjs translate/batch-G01.json translate/ru-G01.json
+```
+
+Индекс маркета (`docs/index.json`) собирается вручную и проверяется штатным валидатором DSH:
+
+```bash
+node tools/check-index.cjs docs/index.json https://dakkaboy.github.io/dsh-locale-ru/index.json
 ```
 
 Установка в локальный профиль:

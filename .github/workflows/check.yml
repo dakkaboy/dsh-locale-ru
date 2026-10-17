@@ -14,6 +14,8 @@ jobs:
           node-version: 22
       - name: Validate batches, placeholders and coverage
         run: node tools/check-all.cjs
+      - name: Validate the plugin market index
+        run: node tools/check-index.cjs docs/index.json
       - name: Build the plugin bundle
         run: node tools/build-pack.cjs translate inspect/corpus.json /tmp/pack
       - name: Execute the bundle and verify registrations
