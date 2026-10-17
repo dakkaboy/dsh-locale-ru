@@ -1,0 +1,43 @@
+{
+  "format": 1,
+  "title": {
+    "en": "dakkaboy plugins",
+    "ru": "Плагины dakkaboy"
+  },
+  "description": {
+    "en": "Community plugins for DeepSeek Harness.",
+    "ru": "Плагины сообщества для DeepSeek Harness."
+  },
+  "plugins": [
+    {
+      "name": "dsh-locale-ru",
+      "title": {
+        "en": "Russian localization",
+        "ru": "Русификатор интерфейса"
+      },
+      "description": {
+        "en": "Russian localization of the DeepSeek Harness web GUI: 2737 strings across 64 UI namespaces, no patching of the app.",
+        "ru": "Русская локализация веб-интерфейса DeepSeek Harness: 2737 строк в 64 разделах, без вмешательства в файлы программы."
+      },
+      "author": "dakkaboy",
+      "homepage": "https://github.com/dakkaboy/dsh-locale-ru#readme",
+      "repository": {
+        "url": "https://github.com/dakkaboy/dsh-locale-ru"
+      },
+      "versions": [
+        {
+          "version": "1.1.0",
+          "publishTimestamp": 1792250535,
+          "source": {
+            "type": "git",
+            "url": "https://github.com/dakkaboy/dsh-locale-ru.git",
+            "commit": "8ba806ddba13e65b09c6d0204daac9c0633719b2"
+          },
+          "engines": {
+            "dsh": ">=0.2.1-rc.2"
+          }
+        }
+      ]
+    }
+  ]
+}
