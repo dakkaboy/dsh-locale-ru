@@ -1,5 +1,7 @@
 # dsh-locale-ru
 
+![check](https://github.com/dakkaboy/dsh-locale-ru/actions/workflows/check.yml/badge.svg)
+
 **Русская локализация веб-интерфейса [DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) (DSH).**
 Плагин добавляет язык **«Русский»** и переводит весь клиентский интерфейс: чат, диалог, настройки,
 боковые панели, траекторию выполнения, магазин и менеджер плагинов, расписание, фоновые задачи,
