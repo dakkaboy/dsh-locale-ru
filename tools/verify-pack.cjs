@@ -12,7 +12,7 @@ if (!fs.existsSync(clientPath)) {
 }
 const corpus = CORPUS_PATH ? JSON.parse(fs.readFileSync(CORPUS_PATH, 'utf8')) : null;
 const STRICT = process.argv.includes('--strict');
-const ALLOW_EMPTY = new Set(['chat/message.stepProcess.sharedPrefix', 'chat/number.groupSeparator', 'pluginManager/sentenceSeparator']);
+const ALLOW_EMPTY = new Set(['chat/message.stepProcess.sharedPrefix', 'chat/number.groupSeparator', 'pluginManager/sentenceSeparator', 'schedule.catalog/cron.part.join', 'schedule.manager/cron.part.join']);
 const source = fs.readFileSync(clientPath, 'utf8');
 
 const failures = [];

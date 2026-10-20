@@ -11,6 +11,8 @@ if (!TRANSLATE || !CORPUS_PATH || !OUT) {
 
 const corpus = JSON.parse(fs.readFileSync(CORPUS_PATH, 'utf8'));
 const ru = {};
+const ALLOW_EMPTY = new Set(['chat/message.stepProcess.sharedPrefix']);
+const ALLOW_SPACE_ONLY = new Set(['chat/number.groupSeparator', 'pluginManager/sentenceSeparator', 'schedule.catalog/cron.part.join', 'schedule.manager/cron.part.join']);
 const problems = [];
 const files = fs.readdirSync(TRANSLATE).filter((f) => /^ru-G\d+\.json$/.test(f)).sort();
 if (!files.length) {
@@ -24,7 +26,12 @@ for (const file of files) {
     ru[ns] = ru[ns] || {};
     for (const [key, value] of Object.entries(dict)) {
       if (!(key in corpus[ns])) { problems.push(`${file}: ${ns}/${key} is not in the corpus`); continue; }
-      if (typeof value !== 'string' || value.trim() === '') { problems.push(`${file}: ${ns}/${key} is empty`); continue; }
+      const id = `${ns}/${key}`;
+      const blankAllowed = ALLOW_EMPTY.has(id) || (ALLOW_SPACE_ONLY.has(id) && typeof value === 'string' && value.trim() === '');
+      if (typeof value !== 'string' || (value.trim() === '' && !blankAllowed)) {
+        problems.push(`${file}: ${id} is empty`);
+        continue;
+      }
       if (ru[ns][key] !== undefined && ru[ns][key] !== value) problems.push(`${ns}/${key} translated twice`);
       ru[ns][key] = value;
     }
@@ -57,8 +64,6 @@ if (fs.existsSync(rewritesPath)) {
   }
   console.log(`applied ${hits} rewrite(s) from ${rewritesPath}`);
 }
-const ALLOW_EMPTY = new Set(['chat/message.stepProcess.sharedPrefix']);
-const ALLOW_SPACE_ONLY = new Set(['chat/number.groupSeparator', 'pluginManager/sentenceSeparator']);
 for (const ns of Object.keys(ru)) {
   for (const [key, value] of Object.entries(ru[ns])) {
     const id = `${ns}/${key}`;

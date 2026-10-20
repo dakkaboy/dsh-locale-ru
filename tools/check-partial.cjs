@@ -69,7 +69,7 @@ for (const w of warnings.slice(0, 40)) console.log(`warn  ${w}`);
 if (warnings.length > 40) console.log(`warn  … ${warnings.length - 40} more warnings`);
 for (const e of errors) console.log(`ERROR ${e}`);
 if (errors.length) {
-  console.log(`\nFAIL ${path(outPath)}: ${errors.length} errors, ${warnings.length} warnings (${total} keys)`);
+  console.log(`\nFAIL ${outPath}: ${errors.length} errors, ${warnings.length} warnings (${total} keys)`);
   process.exit(1);
 }
 console.log(`OK ${outPath}: ${total} keys, ${warnings.length} warnings`);

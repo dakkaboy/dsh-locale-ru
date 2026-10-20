@@ -9,7 +9,7 @@ const corpus = JSON.parse(fs.readFileSync(CORPUS, 'utf8'));
 const placeholders = (text) => [...String(text).matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort().join(',');
 
 const ALLOW_EMPTY = new Set(['chat/message.stepProcess.sharedPrefix']);
-const ALLOW_SPACE_ONLY = new Set(['chat/number.groupSeparator', 'pluginManager/sentenceSeparator']);
+const ALLOW_SPACE_ONLY = new Set(['chat/number.groupSeparator', 'pluginManager/sentenceSeparator', 'schedule.catalog/cron.part.join', 'schedule.manager/cron.part.join']);
 
 const errors = [];
 const ru = {};

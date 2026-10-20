@@ -71,26 +71,64 @@ function splitTopLevel(text) {
   if (tail) parts.push(tail);
   return parts;
 }
-const scopeCache = new Map();
-function buildScope(src) {
-  if (scopeCache.has(src)) return scopeCache.get(src);
+const stringConstCache = new Map();
+function stringConsts(src) {
+  if (stringConstCache.has(src)) return stringConstCache.get(src);
   const scope = Object.create(null);
   const re = /(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*(["'])((?:\\.|(?!\2)[\s\S])*)\2/g;
   let m;
   while ((m = re.exec(src))) scope[m[1]] = m[3];
-  scopeCache.set(src, scope);
+  stringConstCache.set(src, scope);
   return scope;
 }
-function evalLiteral(text, src) {
+const objectConstCache = new Map();
+/** Resolve `const <name> = {…}` / `= […]` declared before `at`, recursively. */
+function objectConst(src, name, at, depth = 0) {
+  if (depth > 6) return undefined;
+  const re = new RegExp('(?:const|let|var)\\s+' + name.replace(/\$/g, '\\$') + '\\s*=\\s*', 'g');
+  let best = -1;
+  let m;
+  while ((m = re.exec(src))) {
+    if (m.index >= at) break;
+    best = m.index;
+  }
+  if (best < 0) return undefined;
+  const start = src.indexOf('=', best) + 1;
+  let i = start;
+  while (i < src.length && /\s/.test(src[i])) i++;
+  if (src[i] !== '{' && src[i] !== '[') return undefined;
+  const key = best + ':' + src[i];
+  if (objectConstCache.has(key)) return objectConstCache.get(key);
+  const lit = findBalanced(src, i);
+  if (!lit) return undefined;
+  const value = evalLiteral(lit.text, src, best, depth + 1);
+  objectConstCache.set(key, value);
+  return value;
+}
+function makeScope(src, at, depth) {
+  const strings = stringConsts(src || '');
+  const resolving = new Set();
+  return new Proxy(strings, {
+    has: () => true,
+    get(target, key) {
+      if (key === Symbol.unscopables) return undefined;
+      if (typeof key !== 'string') return undefined;
+      if (key in target) return target[key];
+      if (resolving.has(key)) return undefined;
+      resolving.add(key);
+      try {
+        return objectConst(src || '', key, at ?? src.length, depth);
+      } finally {
+        resolving.delete(key);
+      }
+    },
+  });
+}
+function evalLiteral(text, src, at, depth = 0) {
   try {
-    const scope = buildScope(src || '');
-    const proxy = new Proxy(scope, {
-      has: () => true,
-      get: (target, key) => (key === Symbol.unscopables ? undefined : target[key]),
-    });
     // eslint-disable-next-line no-new-func
     const fn = new Function('__scope', 'with (__scope) { return (' + text + '); }');
-    return fn(proxy);
+    return fn(makeScope(src, at, depth));
   } catch { return undefined; }
 }
 function declLiteral(src, ident) {
@@ -99,7 +137,7 @@ function declLiteral(src, ident) {
   let m;
   while ((m = re.exec(src))) {
     const lit = findBalanced(src, src.indexOf('{', m.index));
-    if (lit) out.push({ index: m.index, value: evalLiteral(lit.text, src) });
+    if (lit) out.push({ index: m.index, value: evalLiteral(lit.text, src, m.index) });
   }
   return out;
 }
@@ -130,7 +168,7 @@ function resolveObject(src, expr, at) {
   expr = expr.trim();
   if (expr.startsWith('{')) {
     const lit = findBalanced(expr, 0);
-    return lit ? evalLiteral(lit.text, src) : undefined;
+    return lit ? evalLiteral(lit.text, src, at) : undefined;
   }
   if (/^[A-Za-z_$][\w$]*$/.test(expr)) {
     const hit = nearest(declLiteral(src, expr).filter((d) => d.value && typeof d.value === 'object'), at);
