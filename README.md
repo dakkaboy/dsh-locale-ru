@@ -8,10 +8,10 @@
 голосовой ввод, инспектор сессий и многое другое.
 
 > **English:** Russian localization pack for the DeepSeek Harness web GUI. It is a regular DSH client
-> plugin that registers the `ru` language and 64 namespaced dictionaries (2737 strings) through the
+> plugin that registers the `ru` language and 64 namespaced dictionaries (2906 strings) through the
 > official `@deepseek-ai/dsh-client-locale` extension point — no patching of `app.asar` is involved.
 
-- **2737 строк** в **64** пространствах имён (полное покрытие клиентских словарей DSH 0.2.1-rc.2).
+- **2906 строк** в **64** пространствах имён (полное покрытие клиентских словарей DSH 0.2.1-rc.2).
 - Ничего не патчит: `app.asar` и файлы установленной программы остаются нетронутыми.
 - Безопасно при неполном покрытии: отсутствующий ключ автоматически показывается по-английски.
 - Обновления DSH русификатор не ломают — новые строки просто остаются английскими до перевода.
@@ -183,6 +183,13 @@ node tools/install-pack.cjs .            # скопировать пакет и 
 node tools/install-pack.cjs . --remove   # удалить
 ```
 
+### Почему важно проверять полноту извлечения
+
+Словари в клиентских бандлах собираются не только литералами: встречаются конструкции
+`const en = { ...guideEn, ... }`, и наивный экстрактор теряет такие ключи — текст молча остаётся
+английским. `tools/extract-dicts.cjs` рекурсивно разрешает ссылки на объектные константы,
+а `tools/check-all.cjs` сравнивает покрытие с корпусом: `gaps: 0` и одинаковое число ключей
+в `zh`/`en` — обязательные условия перед сборкой.
 ### Как обновлять перевод после релиза DSH
 
 1. `node tools/extract-dicts.cjs "<...>/resources/app.asar" inspect/dicts` — выгрузить словари из
